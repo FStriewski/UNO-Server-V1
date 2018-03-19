@@ -15,11 +15,12 @@ export class Game extends BaseEntity {
     @PrimaryGeneratedColumn()
     id?: number
 
-    //Needs replacing with card content somehow
+    //Replacing with card content below
     // @Column('json', { default: emptyBoard })
     // board: Board
 
-    @Column('char', { length: 1, default: 'x' })
+    // Change turn to sth else
+    @Column('char', { length: 1, default: '' })
     turn: Symbol
 
     @Column('char', { length: 1, nullable: true })
@@ -33,18 +34,24 @@ export class Game extends BaseEntity {
     // eager: used for m:n relationship, load automatically
     @OneToMany(_ => Player, player => player.game, { eager: true })
     players: Player[]
+
+    @OneToMany(_ => Cards, card => card.game, { eager: true })
+    cards: Cards[]
 }
 // Might need updating on array and relationships: 
 @Entity()
+// Docs: This decorator allows you to create a database index for a specific column or columns. It also allows you to mark column or columns to be unique.
 @Index(['game', 'user', 'symbol'], { unique: true })
 export class Player extends BaseEntity {
 
     @PrimaryGeneratedColumn()
     id?: number
 
+    // Many users can become players?!
     @ManyToOne(_ => User, user => user.players)
     user: User
 
+    // Many players can join game
     @ManyToOne(_ => Game, game => game.players)
     game: Game
 
@@ -60,6 +67,8 @@ export class Player extends BaseEntity {
 @Entity()
 
 export class Cards extends BaseEntity {
+    
+    // Should have n:1 to game and ?n:1 to player?
 
     @PrimaryGeneratedColumn()
     id?: number
@@ -75,5 +84,8 @@ export class Cards extends BaseEntity {
 
     @Column('text', { nullable: false })
     location: string
+
+    @ManyToOne(_ => Game, game => game.cards)
+    game: Game
 
 }
