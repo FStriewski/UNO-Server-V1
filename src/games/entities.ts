@@ -29,16 +29,15 @@ export class Game extends BaseEntity {
     @Column('text', { default: 'pending' })
     status: Status
 
-    // this is a relation, read more about them here:
-    // http://typeorm.io/#/many-to-one-one-to-many-relations
-    // eager: used for m:n relationship, load automatically
+    // eager: Eager relations only work when you use find* methods, load automatically
     @OneToMany(_ => Player, player => player.game, { eager: true })
     players: Player[]
 
+// FS add:
     @OneToMany(_ => Cards, card => card.game, { eager: true })
     cards: Cards[]
 }
-// Might need updating on array and relationships: 
+
 @Entity()
 // Docs: This decorator allows you to create a database index for a specific column or columns. It also allows you to mark column or columns to be unique.
 @Index(['game', 'user', 'symbol'], { unique: true })
@@ -61,6 +60,10 @@ export class Player extends BaseEntity {
     // What is this??
     @Column('char', { length: 1 })
     symbol: Symbol
+
+    // FS add:
+    @OneToMany(_ => Cards, card => card.player)
+    cards: Cards[]
 }
 
 
@@ -69,7 +72,6 @@ export class Player extends BaseEntity {
 export class Cards extends BaseEntity {
     
     // Should have n:1 to game and ?n:1 to player?
-
     @PrimaryGeneratedColumn()
     id?: number
 
@@ -85,7 +87,11 @@ export class Cards extends BaseEntity {
     @Column('text', { nullable: false })
     location: string
 
+// FS add:
     @ManyToOne(_ => Game, game => game.cards)
     game: Game
+
+    @ManyToOne(_ => Player, player => player.cards)
+    player: Player
 
 }
