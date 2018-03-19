@@ -15,6 +15,7 @@ export class Game extends BaseEntity {
     @PrimaryGeneratedColumn()
     id?: number
 
+    //Needs replacing with card content somehow
     // @Column('json', { default: emptyBoard })
     // board: Board
 
@@ -33,7 +34,7 @@ export class Game extends BaseEntity {
     @OneToMany(_ => Player, player => player.game, { eager: true })
     players: Player[]
 }
-
+// Might need updating on array and relationships: 
 @Entity()
 @Index(['game', 'user', 'symbol'], { unique: true })
 export class Player extends BaseEntity {
@@ -50,6 +51,29 @@ export class Player extends BaseEntity {
     @Column()
     userId: number
 
+    // What is this??
     @Column('char', { length: 1 })
     symbol: Symbol
+}
+
+
+@Entity()
+
+export class Cards extends BaseEntity {
+
+    @PrimaryGeneratedColumn()
+    id?: number
+
+    @Column('text', { nullable: false })
+    color: string
+
+    @Column('int', { nullable: true }) 
+    value: number
+
+    @Column('int', { length: 1, nullable: true })
+    plus: number
+
+    @Column('text', { nullable: false })
+    location: string
+
 }
