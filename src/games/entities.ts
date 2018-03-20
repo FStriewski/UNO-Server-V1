@@ -49,7 +49,7 @@ export class Player extends BaseEntity {
     @PrimaryGeneratedColumn()
     id?: number
 
-    // Many users can become players?!
+    // Many users can become players?!type Status = 'pending' | 'started' type Status = 'pending' | 'started' | 'finished'| 'finished'
     @ManyToOne(_ => User, user => user.players)
     user: User
 
