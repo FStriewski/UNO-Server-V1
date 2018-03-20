@@ -22,10 +22,11 @@ export class Game extends BaseEntity {
     // @Column('json', { default: emptyBoard })
     // board: Board
 
-    // Change turn to sth else
+    // Change turn to sth else - e.g. Player1, Player 2
     @Column('char', { length: 1, default: '' })
     turn: Symbol
 
+    // Use Playername/id
     @Column('char', { length: 1, nullable: true })
     winner: Symbol
 
@@ -60,12 +61,12 @@ export class Player extends BaseEntity {
     @Column()
     userId: number
 
-    // What is this??
-    @Column('char', { length: 1 })
-    symbol: Symbol
+    @Column()
+    username: string    // Could be enum
+
 
     // FS add:
-    @OneToMany(_ => Cards, card => card.player)
+    @ManyToOne(_ => Cards, card => card.player)
     cards: Cards[]
 }
 
@@ -94,7 +95,7 @@ export class Cards extends BaseEntity {
     @ManyToOne(_ => Game, game => game.cards)
     game: Game
 
-    @ManyToOne(_ => Player, player => player.cards)
+    @OneToMany(_ => Player, player => player.cards)
     player: Player
 
 }

@@ -8,7 +8,7 @@ import { Game, Player, Cards } from './entities'
 import { Validate } from 'class-validator'
 import { io } from '../index'
 
-
+// Test refers to the ./logic file
  class GameUpdate {
 //     @Validate(IsBoard, {
 //         message: 'Not a valid board'
@@ -19,6 +19,7 @@ import { io } from '../index'
 @JsonController()
 export default class GameController {
 
+    //Player 1 creating a game
    // @Authorized() // Make avail for test
     @Post('/games')
     @HttpCode(201)
@@ -30,7 +31,7 @@ export default class GameController {
         await Player.create({
             game: entity,
             user,
-            //symbol: 'x' // Start deck?
+            username: "Player1"
         }).save()
 
         const game = await Game.findOneById(entity.id)
@@ -43,6 +44,7 @@ export default class GameController {
         return game
     }
 
+    //Player 2 joining game
     // @Authorized() // Make avail for test
     @Post('/games/:id([0-9]+)/players')
     @HttpCode(201)
@@ -60,7 +62,7 @@ export default class GameController {
         const player = await Player.create({
             game,
             user,
-          //  symbol: 'o' // Another start deck?
+            username: "Player2"
         }).save()
 
         io.emit('action', {
@@ -79,25 +81,32 @@ export default class GameController {
     async updateGame(
         @CurrentUser() user: User,
         @Param('id') gameId: number,
-       // @Body() update: GameUpdate // Depends on test above
+        @Body() update: GameUpdate // Depends on test above
     ) {
-    //     const game = await Game.findOneById(gameId)
-    //     if (!game) throw new NotFoundError(`Game does not exist`)
+        const game = await Game.findOneById(gameId)
+        if (!game) throw new NotFoundError(`Game does not exist`)
 
-    //     const player = await Player.findOne({ user, game })
+        const player = await Player.findOne({ user, game })
 
-    //     if (!player) throw new ForbiddenError(`You are not part of this game`)
-    //     if (game.status !== 'started') throw new BadRequestError(`The game is not started yet`)
-    //     if (player.symbol !== game.turn) throw new BadRequestError(`It's not your turn`)
-    //     if (!isValidTransition(player.symbol, game.board, update.board)) {
-    //         throw new BadRequestError(`Invalid move`)
-    //     }
+        if (!player) throw new ForbiddenError(`You are not part of this game`)
+        if (game.status !== 'started') throw new BadRequestError(`The game is not started yet`)
 
-    //     const winner = calculateWinner(update.board)
-    //     if (winner) {
-    //         game.winner = winner
-    //         game.status = 'finished'
-    //     }
+         // if (player.username !== game.turn) throw new BadRequestError(`It's not your turn`)      // changed from symbol to username, needs fixing
+        if (false) throw new BadRequestError(`It's not your turn`) 
+
+      // Determine if card / game move is valid
+
+        // if (!isValidTransition(player.symbol, game.board, update.board)) {
+        //     throw new BadRequestError(`Invalid move`)
+        // }
+
+        //const calculateWinner = ( x => 1 ) 
+        //const winner = calculateWinner(update.board) // If player hand is 0
+        // const winner = calculateWinner(false) // If player hand is 0 -- taken from game logic
+        // if (winner) {
+        //     game.winner = winner
+        //     game.status = 'finished'
+        // }
     //     else if (finished(update.board)) {
     //         game.status = 'finished'
     //     }
@@ -105,14 +114,14 @@ export default class GameController {
     //  //       game.turn = player.symbol === 'x' ? 'o' : 'x'
     //     }
     //     game.board = update.board
-    //     await game.save()
+        await game.save()
 
-    //     io.emit('action', {
-    //         type: 'UPDATE_GAME',
-    //         payload: game
-    //     })
+        io.emit('action', {
+            type: 'UPDATE_GAME',
+            payload: game
+        })
 
-    //     return game
+        return game
     }
 
 // @Authorized() // Make avail for test
