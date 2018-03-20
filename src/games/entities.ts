@@ -8,6 +8,9 @@ import User from '../users/entity'
 // const emptyBoard: Board = [emptyRow, emptyRow, emptyRow]
 
 type Status = 'pending' | 'started' | 'finished'
+type Location = 'Deck' | 'CurrentCard' | 'Player1Hand' | 'Player2Hand' | 'Player3Hand' | 'Player4Hand'
+type Color = 'yellow' | 'red' | 'green' | 'blue' | 'black' 
+
 
 @Entity()
 export class Game extends BaseEntity {
@@ -76,7 +79,7 @@ export class Cards extends BaseEntity {
     id?: number
 
     @Column('text', { nullable: false })
-    color: string
+    color: Color
 
     @Column('int', { nullable: true }) 
     value: number
@@ -85,7 +88,7 @@ export class Cards extends BaseEntity {
     plus: number
 
     @Column('text', { nullable: false })
-    location: string
+    location: Location
 
 // FS add:
     @ManyToOne(_ => Game, game => game.cards)

@@ -8,13 +8,13 @@ import { Game, Player, Cards } from './entities'
 import { Validate } from 'class-validator'
 import { io } from '../index'
 
-    // Rewrite Test:
-// class GameUpdate {
+
+ class GameUpdate {
 //     @Validate(IsBoard, {
 //         message: 'Not a valid board'
 //     })
-//     board: Board
-// }
+    cards: Cards
+ }
 
 @JsonController()
 export default class GameController {
